@@ -1,7 +1,12 @@
 import tkinter as tk
-from time import time
 
 from time_tracker import TimeTracker
+
+
+def convert_time(seconds):
+    minutes = seconds // 60
+    seconds = seconds % 60
+    return minutes, seconds
 
 
 class Application(tk.Frame):
@@ -29,7 +34,7 @@ class Application(tk.Frame):
         timer_name = self.name_bar.get()
         self.tracker.create(timer_name)
         label_name = tk.Label(timer_frame, text=timer_name)
-        label_value = tk.Label(timer_frame, text=0)
+        label_value = tk.Label(timer_frame, text=f'0 min 0 sec')
         start_button = tk.Button(timer_frame, text='Start', command=lambda: self.start(timer_name))
         stop_button = tk.Button(timer_frame, text='Stop', command=lambda: self.stop(timer_name))
 
@@ -43,14 +48,15 @@ class Application(tk.Frame):
         label_value.pack(side='right')
 
     def start(self, timer):
-        self.tracker.tracking[timer].start()
+        self.tracker.trackers[timer].start()
 
     def stop(self, timer):
-        self.tracker.tracking[timer].stop()
+        self.tracker.trackers[timer].stop()
 
     def update_clock(self):
         for values in self.timer_labels:
-            values[0].configure(text=self.tracker.tracking[values[1]].read())
+            minutes, seconds = convert_time(self.tracker.trackers[values[1]].read())
+            values[0].configure(text=f'{minutes} min {seconds} sec')
         self.master.after(500, self.update_clock)
 
 
