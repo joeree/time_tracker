@@ -31,11 +31,11 @@ class Tracker:
 class TimeTracker:
 
     def __init__(self):
-        self.trackers = {}
+        self.active_trackers = {}
 
     def get_all(self):
-        for k, v in self.trackers.items():
+        for k, v in self.active_trackers.items():
             print(f'{k}: {round(v.finish(), 2)}')
 
     def create(self, name):
-        self.trackers[name] = Tracker()
+        self.active_trackers[name] = Tracker()

@@ -14,6 +14,7 @@ class Application(tk.Frame):
     def __init__(self, master):
         super().__init__(master)
         self.master = master
+        self.master.title('Time Tracker')
         self.tracker = TimeTracker()
         self.timer_labels = []
 
@@ -30,6 +31,9 @@ class Application(tk.Frame):
         self.create_button.pack(side='right')
 
     def create_timer(self):
+        if self.name_bar.get().strip() == '':
+            return
+
         timer_frame = tk.Frame(self.master)
         timer_name = self.name_bar.get()
         self.tracker.create(timer_name)
@@ -48,14 +52,16 @@ class Application(tk.Frame):
         label_value.pack(side='right')
 
     def start(self, timer):
-        self.tracker.trackers[timer].start()
+        if self.tracker.active_trackers[timer].stopped is True:
+            self.tracker.active_trackers[timer].start()
 
     def stop(self, timer):
-        self.tracker.trackers[timer].stop()
+        if self.tracker.active_trackers[timer].stopped is False:
+            self.tracker.active_trackers[timer].stop()
 
     def update_clock(self):
         for values in self.timer_labels:
-            minutes, seconds = convert_time(self.tracker.trackers[values[1]].read())
+            minutes, seconds = convert_time(self.tracker.active_trackers[values[1]].read())
             values[0].configure(text=f'{minutes} min {seconds} sec')
         self.master.after(500, self.update_clock)
 
